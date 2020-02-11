@@ -1,0 +1,154 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.0"
+
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        /* Java8支持 */
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api 'androidx.appcompat:appcompat:1.1.0'
+    api 'androidx.core:core-ktx:1.2.0'
+    api "com.trello.rxlifecycle2:rxlifecycle:2.2.1"
+    api "com.trello.rxlifecycle2:rxlifecycle-android:2.2.1"
+}
+
+ext {
+
+    bintrayRepo = "maven"
+
+    bintrayName = "rxevent"
+
+    libraryName= 'rxevent'
+
+    publishedGroupId = 'com.lzy.lib'
+
+    artifact = 'rxevent'
+
+    libraryVersion = '1.3'
+
+    libraryDescription = 'test publish'
+
+    siteUrl = 'https://github.com/linzuoyue/RxEvent'
+
+    gitUrl = 'https://github.com/linzuoyue/RxEvent.git'
+
+    developerName = 'Matthew'
+
+    developerEmail = 'linzuoyue2017@gmail.com'
+
+    licenseName = "The Apache Software License, Version 2.0"
+
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+
+    allLicenses = ["Apache-2.0"]
+
+}
+
+if (project.rootProject.file('local.properties').exists()) {
+    //将下面所有的 javadoc task 注释掉，不用这个功能
+    apply plugin: 'com.jfrog.bintray'
+
+    group = publishedGroupId
+    version = libraryVersion
+
+    if (project.hasProperty("android")) { // Android libraries
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from android.sourceSets.main.java.srcDirs
+        }
+
+//1. 这里是第1处
+//    task javadoc(type: Javadoc) {
+//        source = android.sourceSets.main.java.srcDirs
+//        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//    }
+    } else { // Java libraries
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+    }
+
+//2. 这里是第2处
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    classifier = 'javadoc'
+//    from javadoc.destinationDir
+//}
+
+    artifacts {
+//3. 这里是第3处
+//    archives javadocJar
+        archives sourcesJar
+    }
+
+// Bintray
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    bintray {
+        user = properties.getProperty("bintray.user")
+        key = properties.getProperty("bintray.apikey")
+        println user
+        println key
+
+        configurations = ['archives']
+        pkg {
+            repo = bintrayRepo
+
+            name = bintrayName
+            desc = libraryDescription
+            websiteUrl = siteUrl
+            vcsUrl = gitUrl
+            licenses = allLicenses
+            publish = true
+            publicDownloadNumbers = true
+            version {
+                desc = libraryDescription
+                gpg {
+                    sign = true //Determines whether to GPG sign the files. The default is false
+                    passphrase = properties.getProperty("bintray.gpg.password")
+                    //Optional. The passphrase for GPG signing'
+                }
+            }
+        }
+    }
+
+//    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+//    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+}
