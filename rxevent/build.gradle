@@ -4,8 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-
-
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
@@ -148,7 +146,4 @@ if (project.rootProject.file('local.properties').exists()) {
             }
         }
     }
-
-//    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-//    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 }
