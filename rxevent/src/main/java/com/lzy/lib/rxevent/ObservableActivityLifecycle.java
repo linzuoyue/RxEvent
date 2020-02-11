@@ -2,6 +2,8 @@ package com.lzy.lib.rxevent;
 
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
+import java.util.Collection;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.reactivex.Flowable;
@@ -9,7 +11,11 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.annotations.Nullable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
+import io.reactivex.internal.disposables.DisposableHelper;
+import io.reactivex.internal.disposables.EmptyDisposable;
+import io.reactivex.internal.functions.ObjectHelper;
 import io.reactivex.internal.fuseable.HasUpstreamObservableSource;
 import io.reactivex.internal.fuseable.SimpleQueue;
 import io.reactivex.internal.observers.BasicFuseableObserver;
@@ -81,7 +87,7 @@ public class ObservableActivityLifecycle<T> extends Observable<T> implements Has
         /**
          * 当前activity的生命周期状态
          */
-        ActivityEvent activityStatus;
+        volatile ActivityEvent activityStatus;
 
         /**
          * Construct a BasicFuseableObserver by wrapping the given subscriber.

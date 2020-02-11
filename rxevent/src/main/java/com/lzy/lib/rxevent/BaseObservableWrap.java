@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.android.FragmentEvent;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
@@ -71,6 +73,14 @@ public abstract class BaseObservableWrap<T extends BaseEvent, W extends BaseObse
      */
     public W lifecycle(@NonNull ActivityRx activityRx) {
         return wrap(RxJavaPlugins.onAssembly(new ObservableActivityLifecycle<>(this, activityRx.lifecycleSubject)));
+    }
+
+    /**
+     * Activity生命周期
+     * @return
+     */
+    public Observable<List<T>> lifecyclePack(@NonNull ActivityRx activityRx) {
+        return RxJavaPlugins.onAssembly(new ObservableActivityLifecyclePack<>(this, activityRx.lifecycleSubject));
     }
 
     /**

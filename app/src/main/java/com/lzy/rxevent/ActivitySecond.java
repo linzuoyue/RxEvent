@@ -11,6 +11,7 @@ import com.lzy.lib.rxevent.ActivityRx;
 import com.lzy.lib.rxevent.BaseEventObserver;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class ActivitySecond extends ActivityRx {
 
@@ -20,8 +21,12 @@ public class ActivitySecond extends ActivityRx {
         setContentView(R.layout.activity_second);
 
         findViewById(R.id.btn_send_event).setOnClickListener(view -> {
-            TestEventManager.getInstance().onNext(new TestEventManager.TestEvent(TestEventManager.TestEvent.EventType.EVENT_1));
-            TestEventManager.getInstance().onNext(new TestEventManager.TestEvent(TestEventManager.TestEvent.EventType.EVENT_2));
+            Schedulers.io().scheduleDirect(() -> {
+                for (int i = 0; i < 10; i++) {
+                    TestEventManager.getInstance().onNext(new TestEventManager.TestEvent(TestEventManager.TestEvent.EventType.EVENT_1));
+                    TestEventManager.getInstance().onNext(new TestEventManager.TestEvent(TestEventManager.TestEvent.EventType.EVENT_2));
+                }
+            });
         });
 
         TestEventManager.getInstance().register().lifecycle(this)

@@ -70,7 +70,7 @@ public class ObservableFragmentLifecycle<T> extends Observable<T> implements Has
         /**
          * 当前fragment的生命周期状态
          */
-        FragmentEvent fragmentStatus;
+        volatile FragmentEvent fragmentStatus;
         /**
          * 错误
          */
