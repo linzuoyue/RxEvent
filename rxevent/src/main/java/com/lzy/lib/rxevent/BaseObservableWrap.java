@@ -80,7 +80,15 @@ public abstract class BaseObservableWrap<T extends BaseEvent, W extends BaseObse
      * @return
      */
     public Observable<List<T>> lifecyclePack(@NonNull ActivityRx activityRx) {
-        return RxJavaPlugins.onAssembly(new ObservableActivityLifecyclePack<>(this, activityRx.lifecycleSubject));
+        return lifecyclePack(activityRx, bufferSize());
+    }
+
+    /**
+     * Activity生命周期
+     * @return
+     */
+    public Observable<List<T>> lifecyclePack(@NonNull ActivityRx activityRx, int maxCount) {
+        return RxJavaPlugins.onAssembly(new ObservableActivityLifecyclePack<>(this, activityRx.lifecycleSubject, maxCount));
     }
 
     /**

@@ -10,7 +10,6 @@ import com.lzy.lib.rxevent.BaseObservableWrap;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
